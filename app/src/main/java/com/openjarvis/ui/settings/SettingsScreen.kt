@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.openjarvis.llm.UniversalAdapter
 import com.openjarvis.ui.theme.VoidColor
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(
@@ -131,6 +132,7 @@ fun SettingsScreen(
                 Spacer(modifier = Modifier.height(24.dp))
                 
                 TestConnectionButton(
+                    providerName = selectedProvider,
                     apiKey = apiKey,
                     baseUrl = baseUrl,
                     model = model,
@@ -575,12 +577,14 @@ fun FloatingLabelTextField(
 
 @Composable
 private fun TestConnectionButton(
+    providerName: String,
     apiKey: String,
     baseUrl: String,
     model: String,
     onSave: (String, String, String, String) -> Unit
 ) {
     var testState by remember { mutableStateOf<TestState>(TestState.Idle) }
+    val scope = rememberCoroutineScope()
     
     val borderColor by animateColorAsState(
         targetValue = when (testState) {
@@ -602,8 +606,18 @@ private fun TestConnectionButton(
     
     OutlinedButton(
         onClick = {
-            onSave("Groq", baseUrl, apiKey, model)
-            testState = TestState.Success(150)
+            testState = TestState.Loading
+            scope.launch {
+                UniversalAdapter.buildProvider(providerName, baseUrl, apiKey, model)
+                    .testConnection()
+                    .onSuccess { ms ->
+                        onSave(providerName, baseUrl, apiKey, model)
+                        testState = TestState.Success(ms)
+                    }
+                    .onFailure { e ->
+                        testState = TestState.Error(e.message ?: "Connection failed")
+                    }
+            }
         },
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -625,7 +639,7 @@ private fun TestConnectionButton(
                 Text("Connected — ${state.ms}ms")
             }
             is TestState.Error -> {
-                Text("Failed — check key")
+                Text("Failed — ${state.message}")
             }
         }
     }
