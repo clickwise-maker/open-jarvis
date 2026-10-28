@@ -176,7 +176,7 @@ class AutomationManager(private val context: Context) {
                 .enqueueUniqueWork(automation.id, ExistingWorkPolicy.REPLACE, request)
         } else {
             WorkManager.getInstance(context)
-                .enqueueUniquePeriodicWork(automation.id, ExistingWorkPolicy.REPLACE, request as androidx.work.PeriodicWorkRequest)
+                .enqueueUniquePeriodicWork(automation.id, androidx.work.ExistingPeriodicWorkPolicy.REPLACE, request as androidx.work.PeriodicWorkRequest)
         }
     }
     

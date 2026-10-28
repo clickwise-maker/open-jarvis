@@ -10,7 +10,6 @@ class ScreenReader(private val context: Context) {
         val rootNode = JarvisAccessibilityService.instance?.rootInActiveWindow ?: return ""
         val builder = StringBuilder()
         extractTextRecursive(rootNode, builder)
-        rootNode.recycle()
         return builder.toString()
     }
 
@@ -30,15 +29,13 @@ class ScreenReader(private val context: Context) {
         for (i in 0 until node.childCount) {
             node.getChild(i)?.let { child ->
                 extractTextRecursive(child, builder)
-                child.recycle()
             }
         }
     }
 
     fun findNodeByText(text: String): AccessibilityNodeInfo? {
-        val rootNode = service.rootInActiveWindow ?: return null
+        val rootNode = JarvisAccessibilityService.instance?.rootInActiveWindow ?: return null
         val result = findNodeRecursive(rootNode, text)
-        rootNode.recycle()
         return result
     }
 
@@ -63,16 +60,14 @@ class ScreenReader(private val context: Context) {
                     queue.add(child)
                 }
             }
-            current.recycle()
         }
         
         return null
     }
 
     fun findNodeByHint(hint: String): AccessibilityNodeInfo? {
-        val rootNode = service.rootInActiveWindow ?: return null
+        val rootNode = JarvisAccessibilityService.instance?.rootInActiveWindow ?: return null
         val result = findHintRecursive(rootNode, hint)
-        rootNode.recycle()
         return result
     }
 
@@ -95,16 +90,14 @@ class ScreenReader(private val context: Context) {
                     queue.add(child)
                 }
             }
-            current.recycle()
         }
         
         return null
     }
 
     fun getFocusedNode(): AccessibilityNodeInfo? {
-        val rootNode = service.rootInActiveWindow ?: return null
+        val rootNode = JarvisAccessibilityService.instance?.rootInActiveWindow ?: return null
         val focused = rootNode.findFocus(AccessibilityNodeInfo.FOCUS_INPUT)
-        rootNode.recycle()
         return focused
     }
 }

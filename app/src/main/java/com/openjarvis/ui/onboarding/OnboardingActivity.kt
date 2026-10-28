@@ -357,10 +357,11 @@ private fun TryItScreen(onBack: () -> Unit, onSuccess: () -> Unit) {
         
         Spacer(modifier = Modifier.height(16.dp))
         
+        val scope = rememberCoroutineScope()
         Button(
             onClick = {
                 isRunning = true
-                lifecycleScope.launch {
+                scope.launch {
                     delay(2000)
                     isRunning = false
                     onSuccess()
