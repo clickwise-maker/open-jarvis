@@ -17,7 +17,8 @@ class AndroidTTSEngine(private val context: Context) {
         tts = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 isReady = true
-                tts?.language = Locale.US
+                // Multi-language demo: speak in the phone's own language (Hindi phones get Hindi)
+                tts?.language = Locale.getDefault()
                 tts?.setSpeechRate(speechRate)
                 tts?.setPitch(pitch)
                 
