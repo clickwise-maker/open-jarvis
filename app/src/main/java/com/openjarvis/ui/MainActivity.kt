@@ -33,6 +33,21 @@ class MainActivity : ComponentActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val crashFile = java.io.File(getExternalFilesDir(null) ?: filesDir, "crash.txt")
+        if (crashFile.exists()) {
+            val tv = android.widget.TextView(this)
+            tv.text = "Last crash:\n\n" + (try { crashFile.readText() } catch (e: Exception) { "unreadable" }) + "\n\n(Tap to clear and retry)"
+            tv.setPadding(48, 140, 48, 48)
+            tv.movementMethod = android.text.method.ScrollingMovementMethod()
+            tv.setOnClickListener { crashFile.delete(); recreate() }
+            setContentView(tv)
+            return
+        }
+        Thread.setDefaultUncaughtExceptionHandler { _, e ->
+            try { crashFile.writeText(android.util.Log.getStackTraceString(e)) } catch (_: Exception) {}
+            android.os.Process.killProcess(android.os.Process.myPid())
+        }
         
         try {
         enableEdgeToEdge()

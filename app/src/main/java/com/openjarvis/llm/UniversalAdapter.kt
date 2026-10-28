@@ -8,17 +8,21 @@ import com.openjarvis.local.ModelManager
 
 class UniversalAdapter(private val context: Context) {
     
-    private val masterKey = MasterKey.Builder(context)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
-    
-    private val prefs = EncryptedSharedPreferences.create(
-        context,
-        "jarvis_encrypted_prefs",
-        masterKey,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
+    private val prefs: android.content.SharedPreferences = try {
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+        EncryptedSharedPreferences.create(
+            context,
+            "jarvis_encrypted_prefs",
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+    } catch (t: Throwable) {
+        // Some devices fail keystore init at startup; fall back to plain prefs so the app still opens.
+        context.getSharedPreferences("jarvis_prefs_fallback", android.content.Context.MODE_PRIVATE)
+    }
     
     fun getActiveProvider(): LLMProvider {
         val name = prefs.getString("provider_name", "Groq")
