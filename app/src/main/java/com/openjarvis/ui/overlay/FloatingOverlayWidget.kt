@@ -16,8 +16,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Divider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
@@ -98,7 +100,7 @@ fun FloatingOverlayWidget(
                         stiffness = 260f,
                         dampingRatio = 0.8f
                     )
-                ) + fadeIn(animationSpec = tween(150, delayMillis = 240))) togetherWith ExitTransition.None
+                ) + fadeIn(animationSpec = tween(150, delayMillis = 240))) togetherWith fadeOut(tween(100))
             } else {
                 (shrinkHorizontally(
                     animationSpec = spring(
@@ -110,7 +112,7 @@ fun FloatingOverlayWidget(
                         stiffness = Spring.StiffnessMedium,
                         dampingRatio = 0.8f
                     )
-                ) + fadeOut(animationSpec = tween(100))) togetherWith ExitTransition.None
+                ) + fadeOut(animationSpec = tween(100))) togetherWith fadeIn(tween(100))
             }
         },
         label = "overlay_expand"
