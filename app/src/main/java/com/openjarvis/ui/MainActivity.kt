@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
+        try {
         enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         
@@ -70,6 +71,15 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
+        }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val tv = android.widget.TextView(this)
+            tv.text = "Startup error: " + t::class.java.simpleName + "\n" + (t.message ?: "unknown") + "\n\n" +
+                t.stackTrace.take(8).joinToString("\n") { "  " + it }
+            tv.setPadding(48, 140, 48, 48)
+            tv.movementMethod = android.text.method.ScrollingMovementMethod()
+            setContentView(tv)
         }
     }
     
