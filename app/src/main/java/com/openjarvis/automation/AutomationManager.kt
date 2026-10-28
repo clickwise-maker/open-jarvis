@@ -171,8 +171,13 @@ class AutomationManager(private val context: Context) {
             }
         }
         
-        WorkManager.getInstance(context)
-            .enqueueUniqueWork(automation.id, ExistingWorkPolicy.REPLACE, request)
+        if (request is androidx.work.OneTimeWorkRequest) {
+            WorkManager.getInstance(context)
+                .enqueueUniqueWork(automation.id, ExistingWorkPolicy.REPLACE, request)
+        } else {
+            WorkManager.getInstance(context)
+                .enqueueUniquePeriodicWork(automation.id, ExistingWorkPolicy.REPLACE, request as androidx.work.PeriodicWorkRequest)
+        }
     }
     
     private fun cancelAutomation(id: String) {
