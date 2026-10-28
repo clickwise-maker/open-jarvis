@@ -14,4 +14,5 @@
     <color name="overlay_background">#E6121212</color>
     <color name="status_running">#4CAF50</color>
     <color name="status_error">#F44336</color>
+    <color name="launcher_background">#14101F</color>
 </resources>

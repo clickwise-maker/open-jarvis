@@ -43,7 +43,7 @@ class AgentCore(private val context: Context) {
     val state: StateFlow<AgentState> = _state
 
     private val systemPrompt = """
-You are Open Jarvis — an Android device control AI agent.
+You are Clickwise AI — an Android device control AI agent.
 The user gives you a cleanCommand in natural language.
 You must respond with ONLY a valid JSON array of actions. No explanation. No markdown fences. No preamble. Pure JSON array only.
 

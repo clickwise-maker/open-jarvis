@@ -104,7 +104,7 @@ class MainActivity : ComponentActivity() {
     
     private fun startOverlayService() {
         startService(Intent(this, OverlayService::class.java))
-        Toast.makeText(this, "Jarvis is active", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Clickwise AI is active", Toast.LENGTH_SHORT).show()
     }
     
     private fun openSettings() {
@@ -139,7 +139,7 @@ fun PermissionScreen(
         androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(16.dp))
         
         androidx.compose.material3.Text(
-            text = "Open Jarvis needs accessibility and overlay permissions to control your device.",
+            text = "Clickwise AI needs accessibility and overlay permissions to control your device.",
             style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
             color = onSurfaceVariantColor,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -169,7 +169,7 @@ fun PermissionScreen(
         
         if (accessibilityEnabled && overlayEnabled) {
             androidx.compose.material3.Text(
-                text = "Jarvis is active",
+                text = "Clickwise AI is active",
                 style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                 color = primaryColor
             )

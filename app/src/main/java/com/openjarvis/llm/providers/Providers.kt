@@ -45,7 +45,7 @@ class OpenRouterProvider(
                 .addHeader("Authorization", "Bearer $apiKey")
                 .addHeader("Content-Type", "application/json")
                 .addHeader("HTTP-Referer", "https://github.com/tokenarc/open-jarvis")
-                .addHeader("X-Title", "Open Jarvis")
+                .addHeader("X-Title", "Clickwise AI")
                 .post(requestBody.toRequestBody("application/json".toMediaType()))
                 .build()
             
