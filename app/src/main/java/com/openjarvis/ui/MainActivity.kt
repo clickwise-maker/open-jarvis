@@ -34,19 +34,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val crashFile = java.io.File(getExternalFilesDir(null) ?: filesDir, "crash.txt")
-        if (crashFile.exists()) {
+        val crashFile = java.io.File(filesDir, "crash.txt")
+        // Also read the v1.1.1 report location so older crash reports remain visible.
+        val legacyCrashFile = java.io.File(getExternalFilesDir(null) ?: filesDir, "crash.txt")
+        val reportFile = if (crashFile.exists()) crashFile else legacyCrashFile.takeIf { it.exists() }
+        if (reportFile != null) {
             val tv = android.widget.TextView(this)
-            tv.text = "Last crash:\n\n" + (try { crashFile.readText() } catch (e: Exception) { "unreadable" }) + "\n\n(Tap to clear and retry)"
+            tv.text = "Last crash:\n\n" + (try { reportFile.readText() } catch (e: Exception) { "unreadable: ${e.message}" }) + "\n\n(Tap to clear and retry)"
             tv.setPadding(48, 140, 48, 48)
             tv.movementMethod = android.text.method.ScrollingMovementMethod()
-            tv.setOnClickListener { crashFile.delete(); recreate() }
+            tv.setOnClickListener { reportFile.delete(); recreate() }
             setContentView(tv)
             return
-        }
-        Thread.setDefaultUncaughtExceptionHandler { _, e ->
-            try { crashFile.writeText(android.util.Log.getStackTraceString(e)) } catch (_: Exception) {}
-            android.os.Process.killProcess(android.os.Process.myPid())
         }
         
         try {
